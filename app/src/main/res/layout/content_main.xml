@@ -27,7 +27,7 @@
         android:hint="Ingrese el # de telefono"
         android:inputType="number"
         android:text="+503 "
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/nav_host_fragment_content_main"
