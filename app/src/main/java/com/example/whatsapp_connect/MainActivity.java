@@ -1,15 +1,20 @@
 package com.example.whatsapp_connect;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private Button BtnAceptar;
+    private EditText TxbNumber;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -37,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        this.BtnAceptar = findViewById(R.id.btnAceptar);
+        this.TxbNumber = (EditText)findViewById(R.id.txbNumber);
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Alberto Nolasco, jp_nolasco@outlook.com", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.title_app), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -57,17 +65,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        Button btnAceptar = findViewById(R.id.btnAceptar);
-        TextView txbNumber = findViewById(R.id.txbNumber);
+
+        this.TxbNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        this.TxbNumber.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
         TextView txbText = findViewById(R.id.txbText);
-        txbText.setText("Ingrese el código de área y # de telefono, luego presione la tecla aceptar.");
-        btnAceptar.setOnClickListener(new View.OnClickListener(){
+        TextView txbSign = findViewById(R.id.txbSign);
+        txbSign.setText(getString(R.string.title_app));
+        txbText.setText("Ingrese el código de área y # de telefono, luego presione el boton \"Aceptar\".");
+        this.BtnAceptar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                String number = txbNumber.getText().toString();
+                String number = TxbNumber.getText().toString();
                 int length = number.length();
                 if(length == 0 || length < 8){
-                    txbNumber.setError("Debe ingresar un # de telefono");
+                    TxbNumber.setError("Debe ingresar un # de telefono");
                     Snackbar.make(view, "No deje campos vacíos!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
@@ -80,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), "numero: "+number, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
